@@ -1,9 +1,8 @@
 import weatherdata
 import graphing
-data = weatherdata.getWeather()
-graphing.graphs(data)
+import dataAnalysis
+# import getForms
 
-
-
-
-
+weatherdata.getWeather()
+graphing.graphs()
+dataAnalysis.weatherStats()

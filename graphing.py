@@ -1,5 +1,8 @@
-import matplotlib.pyplot as plt, numpy as np
-def graphs(data):
+import matplotlib.pyplot as plt, numpy as np, pandas as pd
+
+def graphs():
+    df = pd.read_csv('timeanddate_scrape.csv')
+    data = df.values.tolist()
     time = []
     temp = []
     prec = []

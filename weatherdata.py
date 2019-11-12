@@ -2,36 +2,71 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import csv
+import random
 
-def getCityState():
-    city = input('Please enter city name: ').lower().strip()
-    state = input('Please enter state IN: ').lower().strip()
-    locStr = city
-    duplicates = open('cityDuplicates.csv','r')
-    reader = csv.reader(duplicates)
-    for i in reader:
-        if city in i:
-            locStr = city + '-' + state
-    duplicates.close()
-    return locStr
+
+city = ''
+state = ''
+location = ''
+url = ''
 
 def makeSoup():
-    location = getCityState()
-
+    global city
+    global state
+    global location
+    global url
+    city = input('Please enter city name: ').lower().strip()
+    state = input('Please enter state: ').lower().strip()
+    location = city + '-' + state
     url = 'https://www.timeanddate.com/weather/usa/' + location + '/hourly'
-
-
     site = requests.get(url)
-
     soup = BeautifulSoup(site.text, 'html.parser')
+    
+    try:
+        tag = soup.h1
+        
+        if ('Unknown address' in tag.string):
+            url = 'https://www.timeanddate.com/weather/usa/' + city + '/hourly'
+            site = requests.get(url)
+            soup = BeautifulSoup(site.text, 'html.parser')
+    except:
+        return soup
+
+    return soup
+
+def cityCheck(soup):
+    
+    tag = soup.h1
+    try:
+        if ('Unknown address' in tag.string):
+            print('Try Again')
+            return False
+        elif ('404' in tag.string):
+            print('404')
+            print('Try Again')
+            return False
+        else:
+            return True
+    except:
+        print('Try Again')
+        return False
+
+def getTable(soup):
 
     bigTable = soup.tbody
-
     return bigTable
 
 def getWeather():
     
-    bigTable = makeSoup()
+    try:
+        soup = makeSoup()
+    except:
+        soup = makeSoup()
+
+    
+    while not cityCheck(soup):
+        soup = makeSoup()
+    bigTable = getTable(soup)
 
     # Hours
     timeCells = bigTable.findAll('th')
@@ -67,10 +102,11 @@ def getWeather():
     precip_lst = []
     for cell in tempAndPrecipCells:
         child = cell.contents[-2].string
+        child = child[:-1]
         precip_lst.append(child)
 
 
-    csv_template = [['','Time', 'Temperature', 'Precipitation']]
+    csv_template = [['index','Time', 'Temperature', 'Precipitation']]
     index = 0
     while index < len(hour_lst):
         #csv_template += item + ', ' + temperature_lst[hour_lst.index(item)] + '\n'
@@ -78,14 +114,9 @@ def getWeather():
         csv_template.append(row)
         index += 1
 
-    return(csv_template)
+    # print(csv_template)
 
     with open ('timeanddate_scrape.csv', 'w') as new_file:
         csv_writer = csv.writer(new_file)
         for item in csv_template:
             csv_writer.writerow(item)
-
-def weatherStats():
-    df = pd.read_csv('timeanddate_scrape.csv')
-    print(df.head(3))
-
