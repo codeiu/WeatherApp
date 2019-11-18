@@ -42,31 +42,43 @@ def weatherStats():
     precipMean = df.loc[:,'Precipitation'].mean()
     precipStDev = df.loc[:,'Precipitation'].std()
     precipMax = df.loc[:, 'Precipitation'].max()
-    print('Temp mean: ',tempMean)
-    print('Temp high: ',tempHigh)
-    print('Temp low: ',tempLow)
-    print('Temp standard dev: ',tempStDev)
-    print('Precip mean: ',precipMean)
-    print('Precip standard dev: ',precipStDev)
-    print('Precip max: ',precipMax)
+    analytics = f'Temp mean: {tempMean:.2f}\nTemp high: {tempHigh}\nTemp low: {tempLow}\nTemp standard dev: {tempStDev:.2f}\nPrecip mean: {precipMean:.2f}\nPrecip standard dev: {precipStDev:.2f}\nPrecip max: {precipMax}'
+    analyticsHTML = analytics.split('\n')
+    analyticsHTML = '<br>'.join(analyticsHTML)
+    """
+    print('Temp mean: ',str(tempMean))
+    print('Temp high: ',str(tempHigh))
+    print('Temp low: ',str(tempLow))
+    print('Temp standard dev: ',str(tempStDev))
+    print('Precip mean: ',str(precipMean))
+    print('Precip standard dev: ',str(precipStDev))
+    print('Precip max: ',str(precipMax))
+    """
+
     
 
     # interpretation
+    intepretation = ''
     if (int(tempMean) in range(tempRangeDict['coldRange'][0],tempRangeDict['coldRange'][1])):
         x = 'cold'
-        print('It\s going to be cold today. Wear a {0}, {1}, and bring {2}.'.format(random.choice(clothingTops[x]),random.choice(clothingBottoms[x]),random.choice(clothingAccessories[x])))
+        interpretation = 'It\s going to be cold today. Wear a {0}, {1}, and bring {2}.'.format(random.choice(clothingTops[x]),random.choice(clothingBottoms[x]),random.choice(clothingAccessories[x]))
     elif (int(tempMean) in range(tempRangeDict['chillyRange'][0],tempRangeDict['chillyRange'][1])):
         x = 'chilly'
-        print('It\'s going to be chilly today. Wear a {0} and {1}.'.format(random.choice(clothingTops[x]),random.choice(clothingBottoms[x])))
+        interpretation = 'It\'s going to be chilly today. Wear a {0} and {1}.'.format(random.choice(clothingTops[x]),random.choice(clothingBottoms[x]))
     elif (int(tempMean) in range(tempRangeDict['warmRange'][0],tempRangeDict['warmRange'][1])):
         x = 'warm'
-        print('It\'s going to be warm today. Wear a {0} and {1}.'.format(random.choice(clothingTops[x]),random.choice(clothingBottoms[x])))
+        interpretation = 'It\'s going to be warm today. Wear a {0} and {1}.'.format(random.choice(clothingTops[x]),random.choice(clothingBottoms[x]))
     elif (int(tempMean) in range(tempRangeDict['hotRange'][0],tempRangeDict['hotRange'][1])):
         x = 'hot'
-        print('It\'s going to be hot today. Wear a {0} and {1}.'.format(random.choice(clothingTops[x]),random.choice(clothingBottoms[x])))
+        interpretation = 'It\'s going to be hot today. Wear a {0} and {1}.'.format(random.choice(clothingTops[x]),random.choice(clothingBottoms[x]))
     
     if tempStDev > 7:
-        print('The temperature is going to vary a lot today. Bring layers.')
+        interpretation = interpretation + '\nThe temperature is going to vary a lot today. Bring layers.'
 
     if precipMax > 40:
-        print('IT GON RAIN')
+        interpretation = interpretation + '\nIT GON RAIN'
+
+    interpretationHTML = interpretation.split('\n')
+    interpretationHTML = '<br>'.join(interpretationHTML)
+
+    return (analytics,interpretation,analyticsHTML,interpretationHTML)

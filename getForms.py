@@ -14,6 +14,7 @@ gc = gspread.authorize(credentials)
 # Get spreadsheet and create DataFrame
 workbook = gc.open(SPREADSHEET)
 sheet = workbook.sheet1
-data = pd.DataFrame(sheet.get_all_records())
+df = pd.DataFrame(sheet.get_all_records())
 
-print(data.head())
+def getContacts():
+    return df.values.tolist()
