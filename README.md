@@ -12,3 +12,19 @@ Weather app for scrapping weather data
 4. formating email + forms
 5. Figure out how to vis 
   b. talk to profs 
+
+
+# Things for over break
+
+data vis 
+google account :)
+google develpor con. slack 
+form setup (intervals cold, hot...)
+
+formate the email with html
+
+try host
+
+push clothing 
+
+
